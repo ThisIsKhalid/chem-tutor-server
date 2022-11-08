@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { application } = require("express");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         const serviceCollection = client.db("chemTutor").collection("services");
+        const userCollection = client.db('chemTutor').collection('users');
 
         app.get('/trending', async(req, res) => {
             const query = {};
@@ -37,9 +39,16 @@ async function run(){
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const service = await serviceCollection.findOne(query);
-            console.log(service);
             res.send(service);
         })
+
+        // login
+        app.post('/users',async (req, res) => {
+            const user = req.body;
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
+
     }
     finally{
 
