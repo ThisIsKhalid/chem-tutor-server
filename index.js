@@ -18,46 +18,62 @@ const client = new MongoClient(uri, {
 
 async function run(){
     try{
-        const serviceCollection = client.db("chemTutor").collection("services");
-        const userCollection = client.db('chemTutor').collection('users');
-        const reviewCollection = client.db('chemTutor').collection('reviews');
+      const serviceCollection = client.db("chemTutor").collection("services");
+      const userCollection = client.db("chemTutor").collection("users");
+      const reviewCollection = client.db("chemTutor").collection("reviews");
 
-        app.get('/trending', async(req, res) => {
-            const query = {};
-            const cursor = serviceCollection.find(query);
-            const result = await cursor.limit(3).toArray();
-            res.send(result);
-        });
+      app.get("/trending", async (req, res) => {
+        const query = {};
+        const cursor = serviceCollection.find(query);
+        const result = await cursor.limit(3).toArray();
+        res.send(result);
+      });
 
-        app.get('/services', async(req, res) => {
-            const query = {};
-            const cursor = serviceCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result);
-        });
+      app.get("/services", async (req, res) => {
+        const query = {};
+        const cursor = serviceCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      });
 
-        app.get('/services/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = {_id: ObjectId(id)};
-            const service = await serviceCollection.findOne(query);
-            res.send(service);
-        })
+      app.get("/services/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const service = await serviceCollection.findOne(query);
+        res.send(service);
+      });
 
-        // login
-        app.post('/users',async (req, res) => {
-            const user = req.body;
-            const result = await userCollection.insertOne(user);
-            res.send(result);
-        })
+      // login
+      app.post("/users", async (req, res) => {
+        const user = req.body;
+        const result = await userCollection.insertOne(user);
+        res.send(result);
+      });
 
-        //reveiws
-        app.post('/reviews', async(req, res) => {
-            const review = req.body;
-            const result = await reviewCollection.insertOne(review);
-            res.send(result);
-        })
+      //reveiws
+      app.post("/reviews", async (req, res) => {
+        const review = req.body;
+        const result = await reviewCollection.insertOne(review);
+        res.send(result);
+      });
 
+      // load review by service, service id params hiseve asbe
+      app.get("/reviews/:id", async (req, res) => {
+        const serviceId = req.params.id;
+        console.log(serviceId);
+        const query = {};
+        const cursor = reviewCollection.find(query);
+        const reviews = await cursor.toArray();
+        const reviewByService = reviews.filter(
+          (rev) => rev.serviceId === serviceId
+        );
+        res.send(reviewByService);
+      });
+
+      // personal reveiw load by email
+      app.get('/my_reviews', {
         
+      })
 
     }
     finally{
