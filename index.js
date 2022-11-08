@@ -20,6 +20,7 @@ async function run(){
     try{
         const serviceCollection = client.db("chemTutor").collection("services");
         const userCollection = client.db('chemTutor').collection('users');
+        const reviewCollection = client.db('chemTutor').collection('reviews');
 
         app.get('/trending', async(req, res) => {
             const query = {};
@@ -48,6 +49,15 @@ async function run(){
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
+
+        //reveiws
+        app.post('/reviews', async(req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+
+        
 
     }
     finally{
