@@ -16,7 +16,19 @@ const client = new MongoClient(uri, {
 });
 
 async function run(){
-    
+    try{
+        const serviceCollection = client.db("chemTutor").collection("services");
+
+        app.get('/services', async(req, res) => {
+            const query = {};
+            const cursor = serviceCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+    }
+    finally{
+
+    }
 }
 run().catch(err => console.log(err.name, err.message, err.stack));
 
