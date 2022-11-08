@@ -71,9 +71,19 @@ async function run(){
       });
 
       // personal reveiw load by email
-      app.get('/my_reviews', {
-        
+      app.get('/my_reviews', async (req, res) => {
+        let query = {};
+        if(req.query.email){
+            query = {
+                email: req.query.email,
+            }
+        }
+        const cursor = reviewCollection.find(query);
+        const myReviews = await cursor.toArray();
+        res.send(myReviews);
       })
+
+      
 
     }
     finally{
