@@ -22,6 +22,7 @@ async function run(){
       const userCollection = client.db("chemTutor").collection("users");
       const reviewCollection = client.db("chemTutor").collection("reviews");
 
+      // latest courses for home page
       app.get("/latest", async (req, res) => {
         const query = {};
         const cursor = serviceCollection.find(query).sort({ _id: -1 });
@@ -29,13 +30,15 @@ async function run(){
         res.send(result);
       });
 
+      // all courses for service page
       app.get("/services", async (req, res) => {
         const query = {};
-        const cursor = serviceCollection.find(query);
+        const cursor = serviceCollection.find(query).sort({ _id: -1 });
         const result = await cursor.toArray();
         res.send(result);
       });
 
+      // service details by service id
       app.get("/services/:id", async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
@@ -47,13 +50,6 @@ async function run(){
       app.post("/add_service", async (req, res) => {
         const service = req.body;
         const result = await serviceCollection.insertOne(service);
-        res.send(service);
-      });
-
-      // create user
-      app.post("/users", async (req, res) => {
-        const user = req.body;
-        const result = await userCollection.insertOne(user);
         res.send(result);
       });
 
@@ -68,7 +64,7 @@ async function run(){
       app.get("/reviews/:id", async (req, res) => {
         const serviceId = req.params.id;
         const query = {};
-        const cursor = reviewCollection.find(query);
+        const cursor = reviewCollection.find(query).sort({ _id: -1 });
         const reviews = await cursor.toArray();
         const reviewByService = reviews.filter(
           (rev) => rev.serviceId === serviceId
@@ -89,7 +85,7 @@ async function run(){
         res.send(myReviews);
       });
 
-      // personal review delete , review id lagbe
+      // personal review delete , need review id
       app.delete("/my_reviews/:id", async (req, res) => {
         const id = req.params.id;
         const query = { _id: ObjectId(id) };
