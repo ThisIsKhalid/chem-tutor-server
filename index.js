@@ -22,9 +22,9 @@ async function run(){
       const userCollection = client.db("chemTutor").collection("users");
       const reviewCollection = client.db("chemTutor").collection("reviews");
 
-      app.get("/trending", async (req, res) => {
+      app.get("/latest", async (req, res) => {
         const query = {};
-        const cursor = serviceCollection.find(query).sort({_id:-1});
+        const cursor = serviceCollection.find(query).sort({ _id: -1 });
         const result = await cursor.limit(3).toArray();
         res.send(result);
       });
@@ -64,10 +64,9 @@ async function run(){
         res.send(result);
       });
 
-      // load review by service, service id params hiseve asbe
+      // load review by service, service-id params hiseve asbe
       app.get("/reviews/:id", async (req, res) => {
         const serviceId = req.params.id;
-        console.log(serviceId);
         const query = {};
         const cursor = reviewCollection.find(query);
         const reviews = await cursor.toArray();
