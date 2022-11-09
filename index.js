@@ -50,7 +50,7 @@ async function run(){
         res.send(service);
       });
 
-      // login
+      // create user
       app.post("/users", async (req, res) => {
         const user = req.body;
         const result = await userCollection.insertOne(user);
