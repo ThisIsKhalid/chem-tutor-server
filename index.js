@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -9,9 +9,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-
 function verifyJWt(req, res, next) {
-  // console.log(req.headers.authorization);
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).send({ message: "unauthorized access" });
@@ -22,7 +20,7 @@ function verifyJWt(req, res, next) {
       return res.status(403).send({ message: "forbidden access" });
     }
     req.decoded = decoded;
-    next(); 
+    next();
   });
 }
 
@@ -43,7 +41,7 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
       });
-      res.send({token});
+      res.send({ token });
     });
 
     // latest courses for home page
@@ -97,8 +95,7 @@ async function run() {
     });
 
     // personal reveiw load by email
-    app.get("/my_reviews",verifyJWt, async (req, res) => {
-      
+    app.get("/my_reviews", verifyJWt, async (req, res) => {
       const decoded = req.decoded;
       if (decoded.email !== req.query.email) {
         res.status(403).send({ message: "unauthorized access" });
@@ -133,7 +130,7 @@ async function run() {
       const updateDoc = {
         $set: {
           description: editedReview,
-          time: updatedTime
+          time: updatedTime,
         },
       };
       const result = await reviewCollection.updateOne(
