@@ -19,7 +19,6 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
       const serviceCollection = client.db("chemTutor").collection("services");
-      const userCollection = client.db("chemTutor").collection("users");
       const reviewCollection = client.db("chemTutor").collection("reviews");
 
       // latest courses for home page
@@ -64,7 +63,7 @@ async function run(){
       app.get("/reviews/:id", async (req, res) => {
         const serviceId = req.params.id;
         const query = {};
-        const cursor = reviewCollection.find(query).sort({ _id: -1 });
+        const cursor = reviewCollection.find(query).sort({ time: -1 });
         const reviews = await cursor.toArray();
         const reviewByService = reviews.filter(
           (rev) => rev.serviceId === serviceId
@@ -83,6 +82,14 @@ async function run(){
         const cursor = reviewCollection.find(query).sort({ _id: -1 });
         const myReviews = await cursor.toArray();
         res.send(myReviews);
+      });
+
+      // load review for edit. need review id
+      app.get("/edit_reveiw/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)};
+        const cursor = await reviewCollection.findOne(query);
+        res.send(cursor);
       });
 
       // personal review delete , need review id
